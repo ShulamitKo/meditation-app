@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="מחולל מדיטציות אישיות עם AI">
+    <title>🧘 מחולל מדיטציות אישיות</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="wave-bg"></div>
+    <!-- Password Screen -->
+    <div id="loginScreen" class="login-overlay">
+        <div class="login-card">
+            <div class="login-icon">🔐</div>
+            <h2 class="login-title">ברוכים הבאים</h2>
+            <p class="login-subtitle">הזינו סיסמה כדי להיכנס</p>
+            <form id="loginForm" class="login-form">
+                <input type="password" id="passwordInput" class="login-input" placeholder="סיסמה" autocomplete="off" inputmode="numeric">
+                <p id="loginError" class="login-error" style="display: none;">סיסמה שגויה, נסו שוב</p>
+                <button type="submit" class="btn btn-primary btn-large login-btn">כניסה ✨</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <span class="logo-icon">🧘</span>
+            <h1 class="logo-text">מחולל מדיטציות</h1>
+        </div>
+        <p class="subtitle">צור לעצמך מדיטציה מותאמת אישית עם AI</p>
+    </header>
+
+    <!-- Main content -->
+    <main class="main">
+        <div class="container">
+
+            <!-- Form Section -->
+            <section class="form-section card" id="formSection">
+                <h2 class="section-title">צור מדיטציה חדשה</h2>
+
+                <form id="meditationForm" class="meditation-form">
+                    <!-- Gender Selection -->
+                    <div class="form-group">
+                        <label class="form-label">מדיטציה עבור</label>
+                        <div class="radio-group" style="grid-template-columns: repeat(2, 1fr);">
+                            <label class="radio-option">
+                                <input type="radio" name="gender" value="female" checked>
+                                <span class="radio-custom">
+                                    <span class="radio-icon">👩</span>
+                                    <span class="radio-label">אישה</span>
+                                </span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="gender" value="male">
+                                <span class="radio-custom">
+                                    <span class="radio-icon">👨</span>
+                                    <span class="radio-label">גבר</span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Type Selection -->
+                    <div class="form-group">
+                        <label class="form-label">סוג מדיטציה</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="type" value="relaxation" checked onchange="hideCustomType()">
+                                <span class="radio-custom">
+                                    <span class="radio-icon">😌</span>
+                                    <span class="radio-label">הרפיה</span>
+                                </span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="type" value="sleep" onchange="hideCustomType()">
+                                <span class="radio-custom">
+                                    <span class="radio-icon">😴</span>
+                                    <span class="radio-label">שינה</span>
+                                </span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="type" value="focus" onchange="hideCustomType()">
+                                <span class="radio-custom">
+                                    <span class="radio-icon">🎯</span>
+                                    <span class="radio-label">מיקוד</span>
+                                </span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="type" value="healing" onchange="hideCustomType()">
+                                <span class="radio-custom">
+                                    <span class="radio-icon">💚</span>
+                                    <span class="radio-label">ריפוי רגשי</span>
+                                </span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="type" value="self-love" onchange="hideCustomType()">
+                                <span class="radio-custom">
+                                    <span class="radio-icon">💖</span>
+                                    <span class="radio-label">אהבה עצמית</span>
+                                </span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="type" value="custom" onchange="showCustomType()">
+                                <span class="radio-custom">
+                                    <span class="radio-icon">✨</span>
+                                    <span class="radio-label">אחר</span>
+                                </span>
+                            </label>
+                        </div>
+
+                        <!-- Custom Type Input (hidden by default) -->
+                        <div id="customTypeContainer" style="display: none; margin-top: 1rem;">
+                            <input
+                                type="text"
+                                id="customType"
+                                class="form-input"
+                                placeholder='לדוגמה: "מדיטציה לפני פגישה חשובה", "שחרור כעסים"...'
+                            >
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="duration" value="3">
+                    <p style="font-size:0.9rem;color:#9CA3AF;margin-top:-0.25rem;">משך המדיטציה קבוע לכ־3 דקות</p>
+
+
+                    <!-- Topic (optional) -->
+                    <div class="form-group">
+                        <label class="form-label" for="topic">נושא ספציפי (אופציונלי)</label>
+                        <input
+                            type="text"
+                            id="topic"
+                            name="topic"
+                            class="form-input"
+                            placeholder='לדוגמה: "התמודדות עם חרדה", "הכנה לשינה"...'
+                        >
+                    </div>
+
+                    <!-- Style Selection -->
+                    <div class="form-group">
+                        <label class="form-label">סגנון</label>
+                        <div class="radio-group">
+                            <label class="radio-option radio-option-small">
+                                <input type="radio" name="style" value="gentle" checked>
+                                <span class="radio-custom">🌸 עדין ורך</span>
+                            </label>
+                            <label class="radio-option radio-option-small">
+                                <input type="radio" name="style" value="energetic">
+                                <span class="radio-custom">⚡ אנרגטי ומעורר</span>
+                            </label>
+                            <label class="radio-option radio-option-small">
+                                <input type="radio" name="style" value="deep">
+                                <span class="radio-custom">🧘 עמוק ומעמיק</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary btn-large" id="createBtn">
+                        <span class="btn-text">צור מדיטציה</span>
+                        <span class="btn-icon">✨</span>
+                    </button>
+                </form>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section" id="resultsSection" style="display: none;">
+
+                <!-- Success Message -->
+                <div class="card success-card">
+                    <div class="success-icon">✅</div>
+                    <h2 class="success-title">המדיטציה שלך מוכנה!</h2>
+                </div>
+
+                <!-- Text Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">📝 טקסט המדיטציה</h3>
+                        <button class="btn-icon-only" id="toggleTextBtn">
+                            <span id="toggleTextIcon">👁️</span>
+                        </button>
+                    </div>
+                    <div class="meditation-text" id="meditationText"></div>
+                </div>
+
+                <!-- Audio Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🎙️ הקלטת קול</h3>
+                    </div>
+                    <div class="card-content">
+                        <div id="audioLoading" class="loading-state">
+                            <div class="spinner"></div>
+                            <p>מייצר הקלטת קול...</p>
+                        </div>
+                        <div id="audioPlayer" style="display: none;">
+                            <audio controls class="audio-player" id="audio">
+                                <source id="audioSource" type="audio/mpeg">
+                                הדפדפן שלך לא תומך בנגן אודיו.
+                            </audio>
+                            <a href="#" download class="btn btn-secondary" id="downloadAudioBtn">
+                                <span>הורד MP3</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!--
+                Image Card (temporarily disabled per request)
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🖼️ תמונה מרגיעה</h3>
+                    </div>
+                    <div class="card-content">
+                        <div id="imageLoading" class="loading-state">
+                            <div class="spinner"></div>
+                            <p>מייצר תמונה מרגיעה...</p>
+                        </div>
+                        <div id="imageContainer" style="display: none;">
+                            <img src="" alt="Meditation Image" class="meditation-image" id="meditationImage">
+                            <a href="#" download class="btn btn-secondary" id="downloadImageBtn">
+                                <span>הורד תמונה</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                -->
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="shareWhatsAppBtn" style="background: #25D366;">
+                        <span>📱 שלח לווטסאפ</span>
+                    </button>
+                    <button class="btn btn-outline" id="createAnotherBtn">
+                        <span>צור מדיטציה נוספת</span>
+                    </button>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-banner">
+            <img src="/images/footer-banner.jpg" alt="Developed by Shulamit - Expert in Development & AI" class="footer-banner-image">
+        </div>
+
+        <a
+            href="https://wa.me/972527609961"
+            target="_blank"
+            rel="noopener noreferrer"
+            style="display:inline-flex;align-items:center;gap:8px;margin-top:0.9rem;padding:0.55rem 0.95rem;border-radius:999px;background:#25D366;color:#fff;text-decoration:none;font-weight:600;"
+            aria-label="WhatsApp - 0527609961"
+        >
+            <span style="font-size:1.05rem;">💬</span>
+            <span>WhatsApp: 0527609961</span>
+        </a>
+
+        <p style="font-size: 0.75rem; margin-top: 1rem; opacity: 0.7;">Powered by Claude Code, ElevenLabs & Google Gemini</p>
+    </footer>
+
+    <script src="app.js"></script>
+    <script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
