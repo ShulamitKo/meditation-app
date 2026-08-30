@@ -327,6 +327,8 @@ async function generateImage(meditationId, meditationType) {
 // Share to WhatsApp
 // ============================================
 
+const SITE_URL = 'https://meditation-generator.vercel.app';
+
 shareWhatsAppBtn.addEventListener('click', async () => {
   // Check if audio is ready
   const audioDataUrl = audioSource.src;
@@ -353,7 +355,7 @@ shareWhatsAppBtn.addEventListener('click', async () => {
 
       const shareData = {
         title: `🧘 מדיטציית ${typeName}`,
-        text: `🧘 מדיטציית ${typeName}\nנוצר באפליקציית המדיטציות של שולמית ✨`,
+        text: `🧘 מדיטציית ${typeName}\nנוצר באפליקציית המדיטציות של שולמית ✨\n${SITE_URL}`,
         files: [file],
       };
 
@@ -368,7 +370,7 @@ shareWhatsAppBtn.addEventListener('click', async () => {
   }
 
   // Fallback: share text via WhatsApp + download file
-  const shareText = encodeURIComponent(`🧘 מדיטציית ${typeName}\nנוצר עם מחולל המדיטציות האישי ✨`);
+  const shareText = encodeURIComponent(`🧘 מדיטציית ${typeName}\nנוצר עם מחולל המדיטציות האישי ✨\n${SITE_URL}`);
   window.open(`https://wa.me/?text=${shareText}`, '_blank');
 
   // Also download the audio
