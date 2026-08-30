@@ -97,8 +97,10 @@ ${genderVerb2} לעיניים להיסגר בעדינות...
         'content-type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2000,
+        model: 'claude-opus-5',
+        max_tokens: 8000,
+        thinking: { type: 'adaptive' },
+        output_config: { effort: 'low' },
         messages: [{
           role: 'user',
           content: prompt
@@ -116,7 +118,11 @@ ${genderVerb2} לעיניים להיסגר בעדינות...
 
     const result = await response.json();
     console.log('📦 Claude API result received');
-    const meditationText = result.content[0].text;
+    const textBlock = (result.content || []).find(b => b.type === 'text');
+    if (!textBlock || !textBlock.text) {
+      throw new Error('Claude returned no text block (stop_reason: ' + result.stop_reason + ')');
+    }
+    const meditationText = textBlock.text;
 
     console.log('✅ Generated meditation with Claude API (length:', meditationText.length, 'chars)');
     return meditationText;
@@ -347,7 +353,7 @@ function generateTemplateMeditation(request) {
 
 module.exports = async (req, res) => {
   // Enable CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
@@ -360,6 +366,10 @@ module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  // Server-side gate: the login screen alone proves nothing.
+  const { requireAuth } = require('../lib/auth');
+  if (!requireAuth(req, res)) return;
 
   // Rate limiting - 5/hour AND 10/day
   const { checkRateLimit } = require('../lib/rate-limit');

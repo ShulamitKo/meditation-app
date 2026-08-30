@@ -422,17 +422,21 @@ const loginForm = document.getElementById('loginForm');
 const passwordInput = document.getElementById('passwordInput');
 const loginError = document.getElementById('loginError');
 
-function checkAuth() {
-  // Password protection disabled - to re-enable, remove the next line and uncomment the block below
-  loginScreen.classList.add('hidden');
-  /*
-  if (localStorage.getItem('meditation_auth') === 'true') {
-    loginScreen.classList.add('hidden');
-  } else {
-    loginScreen.classList.remove('hidden');
-    passwordInput.focus();
+async function checkAuth() {
+  // Ask the server, not localStorage: the session lives in a signed HttpOnly
+  // cookie, and the same cookie is what /api/meditation/* checks.
+  try {
+    const res = await fetch('/api/auth/verify');
+    const data = await res.json();
+    if (data.authenticated) {
+      loginScreen.classList.add('hidden');
+      return;
+    }
+  } catch (err) {
+    console.log('Session check failed:', err);
   }
-  */
+  loginScreen.classList.remove('hidden');
+  passwordInput.focus();
 }
 
 loginForm.addEventListener('submit', async (e) => {
@@ -450,7 +454,6 @@ loginForm.addEventListener('submit', async (e) => {
     });
 
     if (res.ok) {
-      localStorage.setItem('meditation_auth', 'true');
       loginScreen.classList.add('hidden');
     } else {
       loginError.style.display = 'block';
