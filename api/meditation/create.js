@@ -383,7 +383,7 @@ module.exports = async (req, res) => {
   try {
     const request = {
       ...req.body,
-      duration: 3,
+      duration: Number(req.body && req.body.duration) || 3,
     };
 
     // Validate request
