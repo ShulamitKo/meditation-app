@@ -66,7 +66,7 @@ meditationForm.addEventListener('submit', async (e) => {
   // Get form data
   const formData = new FormData(meditationForm);
   let type = formData.get('type');
-  const duration = 3;
+  const duration = Number(formData.get('duration')) || 3;
   const topic = formData.get('topic').trim();
   const style = formData.get('style');
   const gender = formData.get('gender');
