@@ -59,16 +59,21 @@ module.exports = async (req, res) => {
 
     const body = {
       text: meditationText,
-      model_id: 'eleven_v3',
+      // eleven_v3 took ~98s to render a 3-min meditation (measured directly against
+      // the ElevenLabs API) - well past Vercel's 60s function cap, so every request
+      // timed out before the audio came back. eleven_flash_v2_5 rendered the same
+      // length text in ~14s at comparable quality settings, with safe headroom even
+      // for the longest duration the UI offers (5 min).
+      model_id: 'eleven_flash_v2_5',
       voice_settings: {
-        stability: 1.0,        // Robust - most stable (v3: 0.0, 0.5, 1.0)
+        stability: 1.0,        // Robust - most stable
         similarity_boost: 0.5, // Lower for softer, calmer tone
         style: 0.0,            // Zero style for neutral, calm delivery
         use_speaker_boost: false // Disabled for softer, more natural sound
       }
     };
 
-    console.log(`🔊 Using voiceId: ${voiceId}, model: eleven_v3, gender: ${gender || 'female'}`);
+    console.log(`🔊 Using voiceId: ${voiceId}, model: eleven_flash_v2_5, gender: ${gender || 'female'}`);
 
     const response = await fetch(url, {
       method: 'POST',
