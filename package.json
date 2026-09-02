@@ -1,8 +1,8 @@
 {
-  "name": "meditation-web-app",
+  "name": "meditation-app",
   "version": "1.0.0",
   "description": "AI-powered meditation generator",
-  "main": "index.html",
+  "main": "public/index.html",
   "dependencies": {
     "@google/genai": "^1.37.0",
     "@vercel/node": "^3.0.0",
